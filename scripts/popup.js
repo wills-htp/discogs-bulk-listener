@@ -479,9 +479,6 @@ async function createPlaylist(records) {
         createdAt: new Date().toISOString()
       };
       
-      // Store session for the interface
-      await chrome.storage.local.set({ currentSession: sessionData });
-      
       // Show completion view
       showCompletion(records);
     } else {
