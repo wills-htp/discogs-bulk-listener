@@ -106,6 +106,24 @@ async function init() {
   await updateAuthStatus();
   await detectRecords();
   await updateQuotaDisplay();
+  await checkYouTubeTokenOnInit();
+}
+
+async function checkYouTubeTokenOnInit() {
+  try {
+    const response = await chrome.runtime.sendMessage({ action: 'checkYouTubeToken' });
+    if (!response?.valid) {
+      elements.startExtractionBtn.disabled = true;
+      const quotaEl = elements.quotaRemaining;
+      if (quotaEl) {
+        quotaEl.textContent = 'YouTube disconnected — reconnect in Settings';
+        quotaEl.classList.remove('hidden', 'low');
+        quotaEl.classList.add('auth-warning');
+      }
+    }
+  } catch {
+    // Non-blocking — if check fails, let extraction attempt surface the error
+  }
 }
 
 async function updateQuotaDisplay() {

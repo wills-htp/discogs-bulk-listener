@@ -609,5 +609,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getRemainingVideos().then(remaining => sendResponse({ remaining }));
     return true;
   }
+
+  if (request.action === 'checkYouTubeToken') {
+    ensureValidToken()
+      .then(() => sendResponse({ valid: true }))
+      .catch(() => sendResponse({ valid: false }));
+    return true;
+  }
 });
 

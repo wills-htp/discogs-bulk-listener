@@ -843,3 +843,6 @@ body {
 .quota-remaining.low {
   color: #c04000;
 }
+.quota-remaining.auth-warning {
+  color: #c04000;
+}
