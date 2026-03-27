@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Internal project notes
+Discogs_Bulk_HANDOFF.md
+robust_security_pass_date_time.md
+
+# Debug logs
+*.txt
