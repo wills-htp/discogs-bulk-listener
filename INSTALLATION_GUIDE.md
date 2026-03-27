@@ -1,5 +1,7 @@
 # Discogs Bulk Listener - Installation Guide
 
+> This extension is meant to help people find records to buy. Please support artists, labels, and the music-loving community by buying records. It's fun.
+
 ## What You'll Need
 - Chrome browser
 - Google account (for YouTube API)
@@ -101,6 +103,8 @@ No code editing required. You can update any credential later via ⚙️ Setting
 
 ## You're Done! 🎉
 
+This extension is meant to help people find records to buy. Please support artists, labels, and the music-loving community by buying records. It's fun.
+
 Go to any Discogs seller page (like: https://www.discogs.com/seller/MicroVinyl/profile) and click the extension icon to start creating playlists!
 
 ---
@@ -138,6 +142,8 @@ If you try to add more than 200 videos in one day:
 - Your OAuth redirect URI is wrong
 - Make sure it exactly matches: `https://YOUR_EXTENSION_ID.chromiumapp.org/`
 - Extension ID changes if you remove/reinstall the extension
+
+> This extension is meant to help people find records to buy. Please support artists, labels, and the music-loving community by buying records. It's fun.
 
 **Need help?**
 - Check the background console: `chrome://extensions/` → click "service worker"
