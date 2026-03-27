@@ -12,6 +12,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── TAGLINE ─── */
+.tagline {
+  font-size: 9px;
+  color: #5a5c5e;
+  text-align: center;
+  padding: 8px 20px 10px;
+  line-height: 1.5;
+  border-top: 1px solid #aaaaac;
+  background: linear-gradient(180deg, #c0c2c4 0%, #b8babc 100%);
+}
+
 /* ─── HEADER ─── */
 .header {
   background: linear-gradient(180deg, #b8bbbe 0%, #a8aaac 100%);
