@@ -462,7 +462,15 @@ function updateProgress(current, total, found, skipped) {
   elements.videosSkipped.textContent = skipped;
 
   const label = document.getElementById('extraction-label');
-  if (label) label.textContent = percent >= 100 ? 'BUILDING PLAYLIST...' : 'EXTRACTING';
+  if (label) {
+    if (percent >= 100) {
+      label.textContent = 'BUILDING PLAYLIST...';
+      label.classList.add('building');
+    } else {
+      label.textContent = 'EXTRACTING';
+      label.classList.remove('building');
+    }
+  }
   
   // Calculate estimated time remaining
   if (current > 0 && current < total) {

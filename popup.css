@@ -821,6 +821,17 @@ body {
 }
 
 /* ─── ANIMATION ─── */
+@keyframes flashGreen {
+  0%, 100% { color: #2a7a2a; opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.panel-label.building {
+  color: #2a7a2a;
+  font-size: 10px;
+  animation: flashGreen 0.8s ease-in-out infinite;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
