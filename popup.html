@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discogs Bulk Listener</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header / Wordmark -->
+    <div class="header">
+      <div class="wordmark">
+        <div class="brand">Discogs BL</div>
+        <div class="model">SL-BULK-1200</div>
+      </div>
+      <div class="buy-sticker" aria-hidden="true">
+        <span class="sticker-buy">BUY</span>
+        <div class="sticker-rule"></div>
+        <span class="sticker-records">RECORDS</span>
+      </div>
+      <div class="strobe" aria-hidden="true">
+        <div class="strobe-dot lit"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot lit"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot lit"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot lit"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot lit"></div>
+        <div class="strobe-dot"></div>
+        <div class="strobe-dot lit"></div>
+      </div>
+    </div>
+
+    <!-- Setup Wizard Screen -->
+    <div id="setup-screen" class="screen hidden">
+      <div class="setup-header">
+        <div class="panel-label">FIRST-TIME SETUP</div>
+        <p class="dim-text">One-time setup — about 5 minutes.</p>
+      </div>
+
+      <div class="step-indicator">
+        <div class="step-dot active" id="step-dot-1">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="step-dot-2">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="step-dot-3">3</div>
+      </div>
+
+      <div id="setup-step-1" class="setup-step">
+        <div class="setup-step-title">YouTube OAuth Client ID</div>
+        <p class="dim-text">Lets the extension create playlists on your YouTube account.</p>
+        <ol class="setup-instructions">
+          <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+          <li>Create a project &amp; enable <strong>YouTube Data API v3</strong></li>
+          <li>Credentials → Create → <strong>OAuth Client ID</strong> → Web Application</li>
+          <li>Copy the Client ID and paste below</li>
+        </ol>
+        <input type="text" id="setup-client-id-input" class="token-input" placeholder="Paste Client ID (.apps.googleusercontent.com)">
+        <button id="setup-step1-next" class="btn btn-primary" disabled>NEXT →</button>
+      </div>
+
+      <div id="setup-step-2" class="setup-step hidden">
+        <div class="setup-step-title">Discogs Personal Access Token</div>
+        <p class="dim-text">Lets the extension add records to your cart and wantlist.</p>
+        <ol class="setup-instructions">
+          <li>Go to <a href="https://www.discogs.com/settings/developers" target="_blank">Discogs Developer Settings</a></li>
+          <li>Click <strong>Generate new token</strong></li>
+          <li>Copy the token and paste below</li>
+        </ol>
+        <input type="text" id="setup-discogs-token-input" class="token-input" placeholder="Paste Discogs token here">
+        <button id="setup-step2-next" class="btn btn-primary" disabled>NEXT →</button>
+        <button id="setup-step2-back" class="btn btn-text">← BACK</button>
+      </div>
+
+      <div id="setup-step-3" class="setup-step hidden">
+        <div class="setup-step-title">Connect YouTube Account</div>
+        <p class="dim-text">Sign in with Google so the extension can create private playlists. A browser window will open.</p>
+        <button id="setup-connect-youtube-btn" class="btn btn-primary">CONNECT YOUTUBE →</button>
+        <button id="setup-step3-back" class="btn btn-text">← BACK</button>
+      </div>
+
+      <div id="setup-step-4" class="setup-step hidden">
+        <div class="power-led-large"></div>
+        <div class="setup-step-title" style="text-align:center">READY</div>
+        <p class="dim-text" style="text-align:center">Navigate to a Discogs seller, label, or artist page and open the extension.</p>
+        <button id="setup-done-btn" class="btn btn-primary">START USING →</button>
+      </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen hidden">
+      <div class="panel-label">SETTINGS</div>
+
+      <div class="account-section">
+        <div class="account-status">
+          <span class="account-label">YouTube OAuth</span>
+          <span id="youtube-status" class="status-badge">Not Connected</span>
+        </div>
+        <button id="connect-youtube-btn" class="btn btn-primary">CONNECT YOUTUBE</button>
+      </div>
+
+      <div class="account-section">
+        <div class="account-status">
+          <span class="account-label">YouTube Client ID</span>
+          <span id="youtube-client-id-status" class="status-badge">Not Set</span>
+        </div>
+        <input type="text" id="youtube-client-id-input" placeholder="OAuth Client ID" class="token-input">
+        <button id="save-youtube-client-id-btn" class="btn btn-ghost" disabled>SAVE</button>
+        <a href="https://console.cloud.google.com/" target="_blank" class="help-link">Get from Google Cloud Console →</a>
+      </div>
+
+      <div class="account-section">
+        <div class="account-status">
+          <span class="account-label">Discogs Token</span>
+          <span id="discogs-status" class="status-badge">Not Connected</span>
+        </div>
+        <input type="text" id="discogs-token-input" placeholder="Personal Access Token" class="token-input">
+        <button id="save-discogs-token-btn" class="btn btn-ghost">SAVE</button>
+        <a href="https://www.discogs.com/settings/developers" target="_blank" class="help-link">Get Token →</a>
+      </div>
+
+      <button id="close-settings-btn" class="btn btn-text">← BACK</button>
+    </div>
+
+    <!-- Main Screen -->
+    <div id="main-screen" class="screen">
+
+      <!-- Detection View -->
+      <div id="detection-view" class="view">
+        <div class="page-type-indicator">
+          <span class="page-type-badge" id="badge-seller">SELLER</span>
+          <span class="page-type-badge" id="badge-label">LABEL</span>
+          <span class="page-type-badge" id="badge-artist">ARTIST</span>
+        </div>
+
+        <div class="status-message">
+          <p id="record-count">Checking page...</p>
+          <p id="pagination-info" class="pagination-info hidden"></p>
+        </div>
+
+        <div id="pagination-options" class="pagination-options hidden">
+          <label class="radio-option">
+            <input type="radio" name="page-option" value="all" checked>
+            <span>All pages &mdash; <span id="all-pages-count">0</span> records / <span id="total-pages">0</span> pages</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="page-option" value="current">
+            <span>Current page only &mdash; <span id="current-page-count">0</span> records</span>
+          </label>
+        </div>
+
+        <!-- Technics-style START/STOP button -->
+        <div class="startstop-wrap">
+          <button id="start-extraction-btn" class="btn-startstop" disabled>
+            <div class="ss-led-housing">
+              <div class="ss-led"></div>
+            </div>
+            <span class="ss-label">START / STOP</span>
+          </button>
+        </div>
+        <p id="quota-remaining" class="quota-remaining hidden"></p>
+      </div>
+
+      <!-- Extraction Progress View -->
+      <div id="extraction-view" class="view hidden">
+        <div class="panel-label">EXTRACTING</div>
+        <div class="progress-info">
+          <div class="progress-text">
+            <span id="extraction-progress">0 / 0</span>
+            <span id="extraction-percent">0%</span>
+          </div>
+          <div class="pitch-track">
+            <div id="progress-fill" class="progress-fill"></div>
+            <div class="pitch-cursor" id="pitch-cursor"></div>
+            <div class="pitch-ticks" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">FOUND</span>
+            <span id="videos-found" class="stat-number">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">SKIPPED</span>
+            <span id="videos-skipped" class="stat-number">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">ETA</span>
+            <span id="time-remaining" class="stat-number">--</span>
+          </div>
+        </div>
+        <button id="cancel-extraction-btn" class="btn btn-ghost">ABORT</button>
+      </div>
+
+      <!-- Completion View -->
+      <div id="completion-view" class="view hidden">
+        <div class="power-led-large"></div>
+        <div class="panel-label" style="text-align:center;margin-bottom:24px">PLAYLIST READY</div>
+        <div class="completion-stats">
+          <div class="stat-large">
+            <span class="stat-number" id="final-video-count">0</span>
+            <span class="stat-label">TRACKS</span>
+          </div>
+          <div class="stat-large">
+            <span class="stat-number" id="final-skipped-count">0</span>
+            <span class="stat-label">SKIPPED</span>
+          </div>
+        </div>
+        <button id="open-playlist-btn" class="btn btn-primary btn-large">OPEN ON YOUTUBE</button>
+        <div class="secondary-actions">
+          <button id="download-log-btn" class="btn btn-text">DOWNLOAD LOG</button>
+          <button id="new-session-btn" class="btn btn-text">NEW SESSION</button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button id="open-log-viewer-btn" class="settings-link">LOGS</button>
+        <button id="open-settings-btn" class="settings-link">SETTINGS</button>
+      </div>
+    </div>
+
+    <!-- Error View -->
+    <div id="error-view" class="view hidden">
+      <div class="error-led-large"></div>
+      <div class="panel-label" style="text-align:center;margin-bottom:14px">FAULT</div>
+      <p id="error-message" class="error-text"></p>
+      <button id="retry-btn" class="btn btn-primary">RETRY</button>
+      <button id="download-log-error-btn" class="btn btn-ghost" style="margin-top:8px">DOWNLOAD LOG</button>
+      <button id="back-btn" class="btn btn-text">BACK</button>
+    </div>
+
+  </div>
+  <script src="scripts/popup.js"></script>
+</body>
+</html>

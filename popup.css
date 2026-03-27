@@ -1,0 +1,834 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 360px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #c8cacc;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HEADER ─── */
+.header {
+  background: linear-gradient(180deg, #b8bbbe 0%, #a8aaac 100%);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #8a8c8e;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brand {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.model {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #5a5c5e;
+}
+
+/* ─── BUY RECORDS STICKER ─── */
+.buy-sticker {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #f5d800;
+  border: 1.5px solid #c8a800;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    0 2px 6px rgba(0,0,0,0.25),
+    0 1px 2px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(5deg);
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+.sticker-buy {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #111;
+  line-height: 1;
+}
+
+.sticker-rule {
+  width: 28px;
+  height: 1px;
+  background: #111;
+}
+
+.sticker-records {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #111;
+  line-height: 1;
+}
+
+/* Strobe dots */
+.strobe {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.strobe-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #8a8c8e;
+}
+
+.strobe-dot.lit {
+  background: #1a1a1a;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+/* ─── LAYOUT ─── */
+.container {
+  position: relative;
+}
+
+.screen {
+  padding: 18px 16px 4px;
+}
+
+.screen.hidden,
+.view.hidden {
+  display: none;
+}
+
+/* ─── TYPOGRAPHY UTILITIES ─── */
+.panel-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #5a5c5e;
+  margin-bottom: 14px;
+}
+
+.dim-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4a4c4e;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+/* ─── PAGE TYPE BADGES ─── */
+.page-type-indicator {
+  display: flex;
+  gap: 0;
+  margin-bottom: 18px;
+  border: 1px solid #9a9c9e;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.page-type-badge {
+  flex: 1;
+  text-align: center;
+  padding: 7px 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6a6c6e;
+  background: linear-gradient(180deg, #c0c2c4 0%, #b8babc 100%);
+  border-right: 1px solid #9a9c9e;
+  cursor: default;
+  transition: color 0.15s, background 0.15s;
+}
+
+.page-type-badge:last-child {
+  border-right: none;
+}
+
+.page-type-badge.active {
+  color: #1a1a1a;
+  background: linear-gradient(180deg, #d0d2d4 0%, #c4c6c8 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+/* ─── STATUS MESSAGE ─── */
+.status-message {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.status-message p {
+  font-size: 12px;
+  font-weight: 400;
+  color: #4a4c4e;
+  line-height: 1.5;
+}
+
+.pagination-info {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4a4c4e;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+.pagination-info.hidden {
+  display: none;
+}
+
+/* ─── PAGINATION OPTIONS ─── */
+.pagination-options {
+  background: linear-gradient(180deg, #bec0c2 0%, #b8babc 100%);
+  border: 1px solid #9a9c9e;
+  border-radius: 3px;
+  padding: 4px;
+  margin-bottom: 14px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.pagination-options.hidden {
+  display: none;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s;
+  gap: 10px;
+}
+
+.radio-option:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.radio-option input[type="radio"] {
+  accent-color: #1a1a1a;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.radio-option span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2a2c2e;
+  line-height: 1.4;
+}
+
+.radio-option span strong {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+/* ─── START / STOP BUTTON ─── */
+/*
+ * Mirrors the dark rubber START/STOP key on the silver SL-1200 body:
+ * a wide dark key standing proud of the aluminium surface, with a
+ * green LED indicator set into a housing on the left side.
+ */
+.startstop-wrap {
+  margin: 4px 0 6px;
+}
+
+.btn-startstop {
+  width: 100%;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: not-allowed;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* The button surface — raised silver aluminium key, same material as the chassis */
+.btn-startstop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    #dcdee0 0%,
+    #ccced0 35%,
+    #c2c4c6 65%,
+    #b8babc 100%
+  );
+  border-radius: 4px;
+  border: 1px solid #8a8c8e;
+  border-top-color: #e8eaec;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -1px 0 rgba(0,0,0,0.12),
+    0 3px 8px rgba(0,0,0,0.2),
+    0 1px 2px rgba(0,0,0,0.15);
+}
+
+.btn-startstop:not(:disabled):hover::before {
+  background: linear-gradient(180deg,
+    #e4e6e8 0%,
+    #d4d6d8 35%,
+    #cacccf 65%,
+    #c0c2c4 100%
+  );
+}
+
+.btn-startstop:not(:disabled):active::before {
+  background: linear-gradient(180deg,
+    #b8babc 0%,
+    #c4c6c8 100%
+  );
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.18),
+    0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* LED housing */
+.ss-led-housing {
+  position: relative;
+  z-index: 1;
+  width: 54px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(0,0,0,0.12);
+}
+
+/* The LED */
+.ss-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9a9c9e;
+  border: 1px solid #7a7c7e;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* Label text */
+.ss-label {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #7a7c7e;
+  padding-right: 54px;
+  transition: color 0.2s;
+}
+
+/* Enabled — LED glows green, label goes dark and crisp */
+.btn-startstop:not(:disabled) .ss-led {
+  background: #00c853;
+  border-color: #00a844;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.4),
+    0 0 6px rgba(0,200,80,0.7),
+    0 0 14px rgba(0,200,80,0.3);
+}
+
+.btn-startstop:not(:disabled) .ss-label {
+  color: #1a1a1a;
+}
+
+.btn-startstop:not(:disabled) {
+  cursor: pointer;
+}
+
+/* ─── PROGRESS PITCH TRACK ─── */
+.progress-info {
+  margin: 4px 0 18px;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #3a3c3e;
+}
+
+.pitch-track {
+  width: 100%;
+  height: 32px;
+  background: linear-gradient(180deg, #adb0b3 0%, #b5b8bb 100%);
+  border: 1px solid #8a8c8e;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.pitch-ticks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.pitch-ticks span {
+  flex: 1;
+  height: 100%;
+  border-right: 1px solid rgba(0,0,0,0.08);
+}
+
+.pitch-ticks span:nth-child(5n) {
+  border-right-color: rgba(0,0,0,0.15);
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: rgba(0,0,0,0.12);
+  transition: width 0.4s ease;
+}
+
+/* White fader cursor — the pitch slider */
+.pitch-cursor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0%;
+  width: 3px;
+  background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+  box-shadow: 0 0 4px rgba(0,0,0,0.3), 1px 0 2px rgba(0,0,0,0.15);
+  border-radius: 1px;
+  transition: left 0.4s ease;
+}
+
+/* ─── STATS ─── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  background: linear-gradient(180deg, #c4c6c8 0%, #bcbec0 100%);
+  border: 1px solid #9a9c9e;
+  border-radius: 2px;
+  padding: 10px 8px 8px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.stat-label {
+  display: block;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #5a5c5e;
+  margin-bottom: 5px;
+}
+
+.stat-number {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  color: #1a1a1a;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+/* ─── COMPLETION ─── */
+.power-led-large {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00c853;
+  box-shadow: 0 0 8px rgba(0,200,80,0.6), 0 0 20px rgba(0,200,80,0.2);
+  margin: 10px auto 14px;
+}
+
+.error-led-large {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #cc2222;
+  box-shadow: 0 0 8px rgba(200,30,30,0.6), 0 0 20px rgba(200,30,30,0.2);
+  margin: 10px auto 14px;
+}
+
+.completion-stats {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  margin: 0 0 24px;
+}
+
+.stat-large {
+  text-align: center;
+}
+
+.stat-large .stat-number {
+  display: block;
+  font-size: 42px;
+  font-weight: 300;
+  color: #1a1a1a;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-large .stat-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #5a5c5e;
+}
+
+.secondary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 3px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 8px;
+  border: none;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Primary — dark charcoal key on silver, like the Technics pitch reset button */
+.btn-primary {
+  background: linear-gradient(180deg, #2e2e2e 0%, #1e1e1e 100%);
+  color: #c8c8c8;
+  border: 1px solid #111;
+  border-top-color: #3a3a3a;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 2px 5px rgba(0,0,0,0.3),
+    0 1px 2px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #383838 0%, #282828 100%);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: linear-gradient(180deg, #181818 0%, #222 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.btn-large {
+  padding: 15px 20px;
+  font-size: 11px;
+}
+
+/* Ghost — recessed panel button */
+.btn-ghost {
+  background: linear-gradient(180deg, #bec0c2 0%, #b6b8ba 100%);
+  color: #4a4c4e;
+  border: 1px solid #8a8c8e;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: linear-gradient(180deg, #c4c6c8 0%, #bcbec0 100%);
+  color: #2a2c2e;
+}
+
+/* Text — no border */
+.btn-text {
+  background: transparent;
+  color: #5a5c5e;
+  border: none;
+  padding: 8px 12px;
+  font-size: 9px;
+  width: auto;
+  margin-top: 4px;
+}
+
+.btn-text:hover {
+  color: #1a1a1a;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 0 4px;
+  margin-top: 10px;
+  border-top: 1px solid #9a9c9e;
+}
+
+.settings-link {
+  flex: 1;
+  background: linear-gradient(180deg, #d0d2d4 0%, #c2c4c6 100%);
+  border: 1px solid #8a8c8e;
+  border-bottom-color: #7a7c7e;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 9px 0;
+  border-radius: 3px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 3px rgba(0,0,0,0.15);
+  transition: background 0.15s, color 0.15s;
+}
+
+.settings-link:hover {
+  background: linear-gradient(180deg, #dadcde 0%, #cacccf 100%);
+}
+
+.settings-link:active {
+  background: linear-gradient(180deg, #babcbe 0%, #c4c6c8 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.12);
+}
+
+/* ─── SETTINGS SCREEN ─── */
+.account-section {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: linear-gradient(180deg, #c4c6c8 0%, #bcbec0 100%);
+  border: 1px solid #9a9c9e;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.account-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.account-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #2a2c2e;
+}
+
+.status-badge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.08);
+  color: #8a8c8e;
+  border: 1px solid #9a9c9e;
+  text-transform: uppercase;
+}
+
+.status-badge.connected {
+  background: rgba(0,180,60,0.1);
+  color: #007830;
+  border-color: rgba(0,180,60,0.3);
+}
+
+.token-input {
+  width: 100%;
+  padding: 9px 10px;
+  background: rgba(0,0,0,0.08);
+  border: 1px solid #9a9c9e;
+  border-radius: 2px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #2a2c2e;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.token-input::placeholder {
+  color: #9a9c9e;
+}
+
+.token-input:focus {
+  border-color: #4a4c4e;
+  background: rgba(0,0,0,0.05);
+}
+
+.help-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #7a7c7e;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.help-link:hover {
+  color: #1a1a1a;
+}
+
+/* ─── SETUP WIZARD ─── */
+.setup-header {
+  margin-bottom: 20px;
+}
+
+.setup-step-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  gap: 6px;
+}
+
+.step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #c4c6c8 0%, #b8babc 100%);
+  border: 1px solid #9a9c9e;
+  color: #9a9c9e;
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: all 0.2s;
+}
+
+.step-dot.active {
+  background: linear-gradient(180deg, #2e2e2e 0%, #1e1e1e 100%);
+  border-color: #111;
+  color: #c8c8c8;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.step-line {
+  flex: 1;
+  height: 1px;
+  background: #9a9c9e;
+  max-width: 32px;
+}
+
+.setup-instructions {
+  font-size: 12px;
+  color: #5a5c5e;
+  padding-left: 16px;
+  margin-bottom: 14px;
+  line-height: 2;
+}
+
+.setup-instructions a {
+  color: #3a3c3e;
+  text-decoration: none;
+}
+
+.setup-instructions a:hover {
+  color: #1a1a1a;
+}
+
+.setup-instructions strong {
+  color: #3a3c3e;
+}
+
+/* ─── ERROR ─── */
+.error-text {
+  font-size: 12px;
+  color: #4a4c4e;
+  line-height: 1.7;
+  white-space: pre-line;
+  background: rgba(0,0,0,0.06);
+  padding: 12px;
+  border-radius: 2px;
+  border-left: 2px solid #cc2222;
+  margin-bottom: 14px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ─── ANIMATION ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.view {
+  animation: fadeIn 0.2s ease;
+}
+
+/* ─── QUOTA REMAINING ─── */
+.quota-remaining {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #5a5c5e;
+  margin-top: 8px;
+}
+.quota-remaining.low {
+  color: #c04000;
+}

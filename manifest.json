@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Discogs Bulk Listener",
+  "version": "1.0.0",
+  "description": "Browse Discogs seller, label, and artist pages and instantly build a private YouTube playlist so you can listen before you buy.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://www.discogs.com/seller/*",
+    "https://www.discogs.com/label/*",
+    "https://www.discogs.com/artist/*",
+    "https://www.discogs.com/release/*",
+    "https://api.discogs.com/*",
+    "https://www.googleapis.com/youtube/v3/*",
+    "https://accounts.google.com/o/oauth2/*"
+  ],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.discogs.com/seller/*",
+        "https://www.discogs.com/label/*",
+        "https://www.discogs.com/artist/*"
+      ],
+      "js": ["scripts/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
