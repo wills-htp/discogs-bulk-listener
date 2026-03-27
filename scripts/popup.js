@@ -460,6 +460,9 @@ function updateProgress(current, total, found, skipped) {
   elements.progressFill.style.width = `${percent}%`;
   elements.videosFound.textContent = found;
   elements.videosSkipped.textContent = skipped;
+
+  const label = document.getElementById('extraction-label');
+  if (label) label.textContent = percent >= 100 ? 'BUILDING PLAYLIST...' : 'EXTRACTING';
   
   // Calculate estimated time remaining
   if (current > 0 && current < total) {
