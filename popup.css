@@ -131,7 +131,8 @@ body {
 }
 
 .screen.hidden,
-.view.hidden {
+.view.hidden,
+.setup-step.hidden {
   display: none;
 }
 

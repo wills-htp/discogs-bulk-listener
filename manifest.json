@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Discogs Bulk Listener",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browse Discogs seller, label, and artist pages and instantly build a private YouTube playlist so you can listen before you buy.",
   "permissions": [
     "activeTab",
