@@ -76,9 +76,9 @@ async function init() {
   // Set up event listeners first (needed for setup wizard too)
   setupEventListeners();
 
-  // Show setup wizard if Client ID hasn't been configured yet
-  const { youtubeClientId } = await chrome.storage.local.get('youtubeClientId');
-  if (!youtubeClientId) {
+  // Show setup wizard if any required credential is missing
+  const { youtubeClientId, discogsToken, youtubeAccessToken } = await chrome.storage.local.get(['youtubeClientId', 'discogsToken', 'youtubeAccessToken']);
+  if (!youtubeClientId || !discogsToken || !youtubeAccessToken) {
     showSetup();
     return;
   }
@@ -701,7 +701,12 @@ async function saveYoutubeClientId() {
 
 // ── Setup Wizard ──────────────────────────────────────────────────────────────
 
-function showSetup(startStep = 1) {
+async function showSetup() {
+  const { youtubeClientId, discogsToken } = await chrome.storage.local.get(['youtubeClientId', 'discogsToken']);
+  let startStep = 1;
+  if (youtubeClientId && discogsToken) startStep = 3;
+  else if (youtubeClientId) startStep = 2;
+
   Object.values(screens).forEach(s => s.classList.add('hidden'));
   screens.setup.classList.remove('hidden');
   goToSetupStep(startStep);
