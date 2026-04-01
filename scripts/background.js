@@ -527,9 +527,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       try {
         // Extract videos
         const recordsWithVideos = await startExtraction(records);
-        
+
+        // If the user cancelled, stop here without creating a playlist
+        if (extractionState.cancelled) {
+          await saveLogToFile();
+          chrome.runtime.sendMessage({
+            action: 'extractionComplete',
+            success: false,
+            error: 'Extraction cancelled'
+          }).catch(() => {});
+          return;
+        }
+
         // Don't save log here - wait until after playlist creation
-        
+
         // Create playlist
         const playlistResult = await createYouTubePlaylist(recordsWithVideos, playlistName);
         

@@ -113,7 +113,7 @@ async function checkYouTubeTokenOnInit() {
   try {
     const response = await chrome.runtime.sendMessage({ action: 'checkYouTubeToken' });
     if (!response?.valid) {
-      elements.startExtractionBtn.disabled = true;
+      elements.startBtn.disabled = true;
       const quotaEl = elements.quotaRemaining;
       if (quotaEl) {
         quotaEl.textContent = 'YouTube disconnected — reconnect in Settings';
