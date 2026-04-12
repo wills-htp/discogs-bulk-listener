@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discogs Bulk Listener — Setup Guide</title>
+  <link rel="stylesheet" href="setup.css">
+</head>
+<body>
+  <div class="setup-page">
+
+    <div class="setup-header">
+      <div>
+        <span class="brand-name">Discogs Bulk Listener</span>
+        <span class="brand-sub">First-Time Setup Guide</span>
+      </div>
+      <div class="setup-progress">
+        <div class="progress-item" id="prog-cloud">1. Google Cloud</div>
+        <div class="progress-item" id="prog-discogs">2. Discogs Token</div>
+        <div class="progress-item" id="prog-connect">3. Connect YouTube</div>
+      </div>
+    </div>
+
+    <div class="setup-content">
+
+      <div class="setup-intro">
+        <p>This is a one-time setup — about 10 minutes. Once done you'll never need to do it again.</p>
+        <p>You need two things: a <strong>YouTube OAuth Client ID</strong> (lets the extension create playlists on your account) and a <strong>Discogs Personal Access Token</strong> (lets the extension access your cart and wantlist). Both are free.</p>
+        <div class="honest-note">
+          <strong>Heads up:</strong> If this feels complicated and uncomfortable — sorry about that. This is a DIY project and a free extension, so unfortunately the setup has to be a bit clunky. There's nothing weird going on, it's just annoying. Follow the steps below and you'll be done in about 10 minutes.
+        </div>
+      </div>
+
+      <!-- ── PART 1: GOOGLE CLOUD ── -->
+      <div class="setup-part">
+        <div class="part-header">
+          <div class="part-badge">Part 1</div>
+          <div class="part-title">Google Cloud Setup</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-1">1</div>
+          <div class="step-body">
+            <h3>Create a Google Cloud project</h3>
+            <p>Go to <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> and sign in with your Google account.</p>
+            <p>Click the project name in the top bar, then click <strong>New Project</strong> in the top-right corner of the dialog that appears.</p>
+            <img src="setup-screenshots/01-new-project.png" alt="Click New Project">
+            <p>Name it <strong>Discogs Bulk Listener</strong> (or anything you like) and click <strong>Create</strong>.</p>
+            <img src="setup-screenshots/02-name.png" alt="Name the project and click Create">
+            <p>Once created you'll be taken to the project dashboard. Confirm the project name shows at the top.</p>
+            <img src="setup-screenshots/03-welcome.png" alt="Project dashboard">
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-2">2</div>
+          <div class="step-body">
+            <h3>Enable the YouTube Data API v3</h3>
+            <p>Click <strong>APIs &amp; Services</strong> from the Quick access section on the dashboard. You'll see this sidebar:</p>
+            <img src="setup-screenshots/04-sidebar.png" alt="APIs & Services sidebar" class="img-narrow">
+            <p>Click <strong>Library</strong> in the left sidebar.</p>
+            <img src="setup-screenshots/05-api-library.png" alt="API Library">
+            <p>Search for <strong>YouTube Data API v3</strong>.</p>
+            <img src="setup-screenshots/06-youtube-search.png" alt="Search for YouTube Data API v3">
+            <p>Click the <strong>YouTube Data API v3</strong> result, then click <strong>Enable</strong>.</p>
+            <img src="setup-screenshots/07-youtube-enable.png" alt="Click Enable">
+            <p>You'll see the API dashboard confirming it's enabled.</p>
+            <img src="setup-screenshots/08-youtube-enabled.png" alt="YouTube API enabled">
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-3">3</div>
+          <div class="step-body">
+            <h3>Configure the OAuth consent screen</h3>
+            <p>Click <strong>OAuth consent screen</strong> in the left sidebar. You'll see the Google Auth Platform overview.</p>
+            <img src="setup-screenshots/09-oauth-overview-empty.png" alt="OAuth Overview — not configured">
+            <p>Click <strong>Get started</strong>.</p>
+            <p><strong>App Information:</strong> Enter any app name (e.g. "Discogs Bulk Listener") and select your email as the support contact. Click <strong>Next</strong>.</p>
+            <img src="setup-screenshots/10-oauth-app-info.png" alt="App Information form">
+            <p><strong>Audience:</strong> Select <strong>External</strong>, then click <strong>Next</strong>.</p>
+            <img src="setup-screenshots/11-oauth-audience.png" alt="Select External audience">
+            <p><strong>Contact Information:</strong> Enter your email address, then click <strong>Next</strong>.</p>
+            <img src="setup-screenshots/12-oauth-contact.png" alt="Contact Information">
+            <p><strong>Finish:</strong> Check the <strong>I agree to the Google API Services: User Data Policy</strong> box, click <strong>Continue</strong>, then <strong>Create</strong>.</p>
+            <img src="setup-screenshots/13-oauth-finish.png" alt="Finish — agree to policy">
+            <p>You'll be returned to the OAuth Overview, now showing a <strong>Create OAuth client</strong> button.</p>
+            <img src="setup-screenshots/14-oauth-overview-done.png" alt="OAuth Overview after setup">
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-4">4</div>
+          <div class="step-body">
+            <h3>Add yourself as a test user</h3>
+            <p>Click <strong>Audience</strong> in the left sidebar. Scroll down to the <strong>Test users</strong> section and click <strong>+ Add users</strong>.</p>
+            <img src="setup-screenshots/15-audience-test-users.png" alt="Audience page — Test users section">
+            <p>Enter your Google account email address and click <strong>Save</strong>.</p>
+            <img src="setup-screenshots/16-add-users-dialog.png" alt="Add users dialog">
+            <p>Your email will appear in the list.</p>
+            <img src="setup-screenshots/17-user-added.png" alt="Test user added">
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-5">5</div>
+          <div class="step-body">
+            <h3>Create an OAuth Client ID</h3>
+            <p>Click <strong>Clients</strong> in the left sidebar, then click <strong>+ Create client</strong>.</p>
+            <img src="setup-screenshots/18-clients-empty.png" alt="Clients page — click Create client">
+            <p>Set <strong>Application type</strong> to <strong>Web application</strong>.</p>
+            <img src="setup-screenshots/19-create-client-type.png" alt="Select Web application">
+
+            <div class="redirect-callout">
+              <div class="callout-label">Your redirect URI — copy this now</div>
+              <p>Under <strong>Authorized redirect URIs</strong> (not JavaScript origins), click <strong>+ Add URI</strong> and paste this value:</p>
+              <div class="callout-uri-row">
+                <code id="redirect-uri-display">Loading...</code>
+                <button id="copy-redirect-uri-btn" class="btn-copy-uri">Copy</button>
+              </div>
+            </div>
+
+            <img src="setup-screenshots/20-create-client-form.png" alt="Add redirect URI and click Create">
+            <p>Click <strong>Create</strong>. A dialog shows your new client. <strong>Copy the Client ID</strong> — the long value ending in <code>.apps.googleusercontent.com</code>. You'll paste it below.</p>
+            <img src="setup-screenshots/21-oauth-client-created.png" alt="Copy the Client ID">
+            <img src="setup-screenshots/22-clients-list.png" alt="Clients list">
+            <img src="setup-screenshots/23-client-detail.png" alt="Client detail — Client ID shown on right">
+
+            <div class="credential-box" id="box-client-id">
+              <div class="credential-box-status" id="client-id-saved-banner"></div>
+              <label>Paste your YouTube Client ID here:</label>
+              <div class="input-row">
+                <input type="text" id="client-id-input" class="cred-input" placeholder="Paste Client ID (.apps.googleusercontent.com)">
+                <button id="save-client-id-btn" class="btn-save" disabled>Save</button>
+              </div>
+              <div id="client-id-status" class="status-msg hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PART 2: DISCOGS TOKEN ── -->
+      <div class="setup-part">
+        <div class="part-header">
+          <div class="part-badge">Part 2</div>
+          <div class="part-title">Discogs Token</div>
+        </div>
+
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-6">6</div>
+          <div class="step-body">
+            <h3>Get your Discogs personal access token</h3>
+            <p>Go to <a href="https://www.discogs.com/settings/developers" target="_blank">discogs.com/settings/developers</a>. Click <strong>Generate token</strong>.</p>
+            <img src="setup-screenshots/24-discogs-developers.png" alt="Discogs developer settings — Generate token">
+            <p>Your token appears below the button. Copy it.</p>
+            <img src="setup-screenshots/25-discogs-token.png" alt="Copy the token">
+
+            <div class="credential-box" id="box-discogs">
+              <div class="credential-box-status" id="discogs-saved-banner"></div>
+              <label>Paste your Discogs token here:</label>
+              <div class="input-row">
+                <input type="text" id="discogs-token-input" class="cred-input" placeholder="Paste Discogs token here">
+                <button id="save-discogs-token-btn" class="btn-save" disabled>Save</button>
+              </div>
+              <div id="discogs-token-status" class="status-msg hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PART 3: CONNECT YOUTUBE ── -->
+      <div class="setup-part">
+        <div class="part-header">
+          <div class="part-badge">Part 3</div>
+          <div class="part-title">Connect YouTube</div>
+        </div>
+
+        <div class="setup-step">
+          <div class="step-num" id="stepnum-7">7</div>
+          <div class="step-body">
+            <h3>Sign in with Google</h3>
+            <p>Click the button below. A Google sign-in window will open — sign in with the same Google account you used in Google Cloud Console.</p>
+            <div class="warning-box">
+              <strong>Expected warning:</strong> Google may show an "App isn't verified" screen. This is normal for personal credentials. Click <strong>Advanced</strong>, then <strong>Go to [app name] (unsafe)</strong> to continue.
+            </div>
+            <button id="connect-youtube-btn" class="btn-connect">Connect YouTube →</button>
+            <div id="connect-status" class="status-msg hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLETE ── -->
+      <div id="setup-complete" class="setup-complete hidden">
+        <div class="complete-check">✓</div>
+        <h2>Setup Complete</h2>
+        <p>Everything is configured. Close this tab, navigate to a Discogs seller, label, or artist page, and click the extension icon to get started.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="scripts/setup.js"></script>
+</body>
+</html>

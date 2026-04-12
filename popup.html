@@ -36,68 +36,13 @@
       </div>
     </div>
 
-    <!-- Setup Wizard Screen -->
+    <!-- Setup Screen -->
     <div id="setup-screen" class="screen hidden">
       <div class="setup-header">
         <div class="panel-label">FIRST-TIME SETUP</div>
-        <p class="dim-text">One-time setup — about 5 minutes.</p>
+        <p class="dim-text">A step-by-step guide with screenshots will open in your browser.</p>
       </div>
-
-      <div class="step-indicator">
-        <div class="step-dot active" id="step-dot-1">1</div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="step-dot-2">2</div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="step-dot-3">3</div>
-      </div>
-
-      <div id="setup-step-1" class="setup-step">
-        <div class="setup-step-title">YouTube OAuth Client ID</div>
-        <p class="dim-text">Lets the extension create playlists on your YouTube account.</p>
-        <ol class="setup-instructions">
-          <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
-          <li>Create a project &amp; enable <strong>YouTube Data API v3</strong></li>
-          <li>Go to <strong>OAuth consent screen</strong> → User Type: <em>External</em> → fill in app name &amp; your email → under Test Users add your Google account email → Save</li>
-          <li>Credentials → Create → <strong>OAuth Client ID</strong> → Web Application</li>
-          <li>Under <strong>Authorized redirect URIs</strong>, add:<br>
-            <span class="redirect-uri-row">
-              <code id="redirect-uri-display">Loading...</code>
-              <button id="copy-redirect-uri-btn" type="button" class="btn-copy-uri">Copy</button>
-            </span>
-          </li>
-          <li>Copy the Client ID and paste below</li>
-        </ol>
-        <input type="text" id="setup-client-id-input" class="token-input" placeholder="Paste Client ID (.apps.googleusercontent.com)">
-        <button id="setup-step1-next" class="btn btn-primary" disabled>NEXT →</button>
-      </div>
-
-      <div id="setup-step-2" class="setup-step hidden">
-        <div class="setup-step-title">Discogs Personal Access Token</div>
-        <p class="dim-text">Lets the extension add records to your cart and wantlist.</p>
-        <ol class="setup-instructions">
-          <li>Go to <a href="https://www.discogs.com/settings/developers" target="_blank">Discogs Developer Settings</a></li>
-          <li>Click <strong>Generate new token</strong></li>
-          <li>Copy the token and paste below</li>
-        </ol>
-        <input type="text" id="setup-discogs-token-input" class="token-input" placeholder="Paste Discogs token here">
-        <button id="setup-step2-next" class="btn btn-primary" disabled>NEXT →</button>
-        <button id="setup-step2-back" class="btn btn-text">← BACK</button>
-      </div>
-
-      <div id="setup-step-3" class="setup-step hidden">
-        <div class="setup-step-title">Connect YouTube Account</div>
-        <p class="dim-text">Sign in with Google so the extension can create private playlists. A browser window will open.</p>
-        <p class="dim-text">If Google shows an <strong>"App isn't verified"</strong> warning, click <strong>Advanced</strong> → <strong>Go to [app name] (unsafe)</strong>. This is normal for personal-use credentials.</p>
-        <button id="setup-connect-youtube-btn" class="btn btn-primary">CONNECT YOUTUBE →</button>
-        <button id="setup-step3-back" class="btn btn-text">← BACK</button>
-      </div>
-
-      <div id="setup-step-4" class="setup-step hidden">
-        <div class="power-led-large"></div>
-        <div class="setup-step-title" style="text-align:center">READY</div>
-        <p class="dim-text" style="text-align:center">Navigate to a Discogs seller, label, or artist page and open the extension.</p>
-        <button id="setup-done-btn" class="btn btn-primary">START USING →</button>
-      </div>
+      <button id="open-setup-btn" class="btn btn-primary">OPEN SETUP GUIDE →</button>
     </div>
 
     <!-- Settings Screen -->

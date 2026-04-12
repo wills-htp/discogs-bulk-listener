@@ -699,41 +699,11 @@ async function saveYoutubeClientId() {
   alert('YouTube Client ID saved!');
 }
 
-// ── Setup Wizard ──────────────────────────────────────────────────────────────
+// ── Setup ─────────────────────────────────────────────────────────────────────
 
-async function showSetup() {
-  const { youtubeClientId, discogsToken } = await chrome.storage.local.get(['youtubeClientId', 'discogsToken']);
-  let startStep = 1;
-  if (youtubeClientId && discogsToken) startStep = 3;
-  else if (youtubeClientId) startStep = 2;
-
-  // Populate redirect URI display for step 1
-  const redirectUri = chrome.identity.getRedirectURL();
-  const redirectEl = document.getElementById('redirect-uri-display');
-  if (redirectEl) redirectEl.textContent = redirectUri;
-  const copyBtn = document.getElementById('copy-redirect-uri-btn');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(redirectUri).then(() => {
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-      });
-    });
-  }
-
+function showSetup() {
   Object.values(screens).forEach(s => s.classList.add('hidden'));
   screens.setup.classList.remove('hidden');
-  goToSetupStep(startStep);
-}
-
-function goToSetupStep(step) {
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById(`setup-step-${i}`).classList.toggle('hidden', i !== step);
-  }
-  for (let i = 1; i <= 3; i++) {
-    const dot = document.getElementById(`step-dot-${i}`);
-    if (dot) dot.classList.toggle('active', i <= step);
-  }
 }
 
 function isValidYouTubeClientId(id) {
@@ -744,61 +714,7 @@ function isValidDiscogsToken(token) {
   return /^[a-zA-Z0-9]{15,}$/.test(token);
 }
 
-async function setupStep1Next() {
-  const clientId = document.getElementById('setup-client-id-input').value.trim();
-  if (!clientId) return;
-  if (!isValidYouTubeClientId(clientId)) {
-    alert('That doesn\'t look like a valid Client ID. It should end in .apps.googleusercontent.com');
-    return;
-  }
-  await chrome.storage.local.set({ youtubeClientId: clientId });
-  goToSetupStep(2);
-}
-
-async function setupStep2Next() {
-  const token = document.getElementById('setup-discogs-token-input').value.trim();
-  if (!token) return;
-  if (!isValidDiscogsToken(token)) {
-    alert('That doesn\'t look like a valid Discogs token. Please copy it directly from your Discogs developer settings.');
-    return;
-  }
-  await chrome.storage.local.set({ discogsToken: token });
-  goToSetupStep(3);
-}
-
-async function setupConnectYouTube() {
-  const btn = document.getElementById('setup-connect-youtube-btn');
-  btn.disabled = true;
-  btn.textContent = 'Connecting...';
-  try {
-    const response = await chrome.runtime.sendMessage({ action: 'authenticateYouTube' });
-    if (response.success) {
-      goToSetupStep(4);
-    } else {
-      alert('Failed to connect YouTube: ' + response.error);
-    }
-  } catch (error) {
-    alert('Error connecting YouTube: ' + error.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Connect YouTube →';
-  }
-}
-
-async function setupDone() {
-  screens.setup.classList.add('hidden');
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab.url.includes('discogs.com/seller/') && !tab.url.includes('discogs.com/label/') && !tab.url.includes('discogs.com/artist/')) {
-    showError('Please navigate to a Discogs seller, label, or artist page');
-    return;
-  }
-  await updateAuthStatus();
-  await detectRecords();
-  await updateQuotaDisplay();
-  screens.main.classList.remove('hidden');
-}
-
-// ── End Setup Wizard ──────────────────────────────────────────────────────────
+// ── End Setup ─────────────────────────────────────────────────────────────────
 
 // Show/hide views
 function showView(viewName) {
@@ -849,19 +765,10 @@ function setupEventListeners() {
     const url = chrome.runtime.getURL('log-viewer.html');
     chrome.tabs.create({ url });
   });
-  // Setup wizard buttons
-  document.getElementById('setup-client-id-input')?.addEventListener('input', (e) => {
-    document.getElementById('setup-step1-next').disabled = !e.target.value.trim();
+  // Setup screen
+  document.getElementById('open-setup-btn')?.addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('setup.html') });
   });
-  document.getElementById('setup-step1-next')?.addEventListener('click', setupStep1Next);
-  document.getElementById('setup-discogs-token-input')?.addEventListener('input', (e) => {
-    document.getElementById('setup-step2-next').disabled = !e.target.value.trim();
-  });
-  document.getElementById('setup-step2-next')?.addEventListener('click', setupStep2Next);
-  document.getElementById('setup-step2-back')?.addEventListener('click', () => goToSetupStep(1));
-  document.getElementById('setup-connect-youtube-btn')?.addEventListener('click', setupConnectYouTube);
-  document.getElementById('setup-step3-back')?.addEventListener('click', () => goToSetupStep(2));
-  document.getElementById('setup-done-btn')?.addEventListener('click', setupDone);
 
   // Settings buttons
   elements.openSettingsBtn?.addEventListener('click', showSettings);
