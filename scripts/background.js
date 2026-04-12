@@ -31,53 +31,135 @@ const CONFIG = {
   maxRetries: 2
 };
 
-// YouTube API Authentication
-// Launch the OAuth flow. Pass interactive=false for a silent token refresh attempt.
+// ── PKCE helpers ──────────────────────────────────────────────────────────────
+
+function generateCodeVerifier() {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return btoa(String.fromCharCode(...array))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function generateCodeChallenge(verifier) {
+  const data = new TextEncoder().encode(verifier);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+// ── YouTube API Authentication ─────────────────────────────────────────────────
+
+// The GitHub Pages callback page that receives the OAuth redirect from Google,
+// then bounces the code back to the extension via the chromiumapp.org URL in state.
+const OAUTH_CALLBACK_URL = 'https://wills-htp.github.io/discogs-bulk-listener/callback.html';
+
+// Launch OAuth 2.0 authorization code + PKCE flow.
+// Uses a GitHub Pages callback page as the redirect URI (Google accepts real HTTPS domains;
+// it rejects chromiumapp.org for Web Application clients). The callback page immediately
+// redirects to the extension's chromiumapp.org URL (passed as state), which Chrome intercepts.
 async function launchAuthFlow(interactive) {
-  const { youtubeClientId } = await chrome.storage.local.get('youtubeClientId');
+  const { youtubeClientId, youtubeClientSecret } = await chrome.storage.local.get(['youtubeClientId', 'youtubeClientSecret']);
   if (!youtubeClientId) {
     throw new Error('YouTube Client ID not configured. Please complete setup in Settings.');
   }
+  if (!youtubeClientSecret) {
+    throw new Error('YouTube Client Secret not configured. Please complete setup in Settings.');
+  }
 
-  const redirectURL = chrome.identity.getRedirectURL();
-  const authURL = `https://accounts.google.com/o/oauth2/auth?` +
-    `client_id=${youtubeClientId}&` +
-    `response_type=token&` +
-    `redirect_uri=${encodeURIComponent(redirectURL)}&` +
-    `scope=${encodeURIComponent(CONFIG.youtube.scope)}`;
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+  const extensionRedirectUrl = chrome.identity.getRedirectURL();
+
+  const authURL = 'https://accounts.google.com/o/oauth2/auth?' +
+    'client_id=' + encodeURIComponent(youtubeClientId) + '&' +
+    'response_type=code&' +
+    'redirect_uri=' + encodeURIComponent(OAUTH_CALLBACK_URL) + '&' +
+    'scope=' + encodeURIComponent(CONFIG.youtube.scope) + '&' +
+    'code_challenge=' + codeChallenge + '&' +
+    'code_challenge_method=S256&' +
+    'access_type=offline&' +
+    'prompt=consent&' +
+    'state=' + encodeURIComponent(extensionRedirectUrl);
 
   return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow({ url: authURL, interactive }, (redirectUrl) => {
-      if (chrome.runtime.lastError || !redirectUrl) {
+    chrome.identity.launchWebAuthFlow({ url: authURL, interactive }, async (redirectedTo) => {
+      if (chrome.runtime.lastError || !redirectedTo) {
         reject(chrome.runtime.lastError || new Error('No redirect URL'));
         return;
       }
-      const match = redirectUrl.match(/access_token=([^&]+)/);
-      if (match && match[1]) {
-        chrome.storage.local.set({ youtubeAccessToken: match[1] });
-        resolve(match[1]);
-      } else {
-        reject(new Error('Failed to get access token'));
+      try {
+        // Chrome intercepts when callback.html redirects to the chromiumapp.org URL.
+        // The code is in the query params of that final URL.
+        const finalUrl = new URL(redirectedTo);
+        const code = finalUrl.searchParams.get('code');
+        const error = finalUrl.searchParams.get('error');
+        if (error) { reject(new Error('Auth error: ' + error)); return; }
+        if (!code) { reject(new Error('No authorization code received')); return; }
+
+        // Token exchange — redirect_uri must match what was sent to Google (the GitHub Pages URL)
+        const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            code,
+            client_id: youtubeClientId,
+            client_secret: youtubeClientSecret,
+            redirect_uri: OAUTH_CALLBACK_URL,
+            grant_type: 'authorization_code',
+            code_verifier: codeVerifier
+          })
+        });
+
+        const tokens = await tokenRes.json();
+        if (tokens.access_token) {
+          const toStore = { youtubeAccessToken: tokens.access_token };
+          if (tokens.refresh_token) toStore.youtubeRefreshToken = tokens.refresh_token;
+          await chrome.storage.local.set(toStore);
+          resolve(tokens.access_token);
+        } else {
+          reject(new Error(tokens.error_description || tokens.error || 'Failed to get access token'));
+        }
+      } catch (err) {
+        reject(err);
       }
     });
   });
 }
 
-// Authenticate interactively (called from Settings / setup wizard)
+// Authenticate interactively (called from Settings / setup guide)
 async function authenticateYouTube() {
-  try {
-    return await launchAuthFlow(true);
-  } catch (error) {
-    throw error;
-  }
+  return await launchAuthFlow(true);
 }
 
-// Return a valid access token, auto-refreshing silently when possible.
-// Only shows an auth popup if a silent refresh fails.
-async function ensureValidToken() {
-  const { youtubeAccessToken } = await chrome.storage.local.get('youtubeAccessToken');
+// Silently refresh the access token using the stored refresh token.
+async function refreshAccessToken(refreshToken) {
+  const { youtubeClientId, youtubeClientSecret } = await chrome.storage.local.get(['youtubeClientId', 'youtubeClientSecret']);
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      refresh_token: refreshToken,
+      client_id: youtubeClientId,
+      client_secret: youtubeClientSecret,
+      grant_type: 'refresh_token'
+    })
+  });
+  const tokens = await res.json();
+  if (tokens.access_token) {
+    await chrome.storage.local.set({ youtubeAccessToken: tokens.access_token });
+    return tokens.access_token;
+  }
+  throw new Error('Token refresh failed: ' + (tokens.error_description || tokens.error || 'unknown'));
+}
 
-  // Test the stored token
+// Return a valid access token, refreshing silently via refresh token when possible.
+// Do NOT fall back to interactive OAuth here — opening an auth window while the popup
+// is open causes Chrome to close the popup, leaving the user confused about extraction.
+async function ensureValidToken() {
+  const { youtubeAccessToken, youtubeRefreshToken } = await chrome.storage.local.get([
+    'youtubeAccessToken', 'youtubeRefreshToken'
+  ]);
+
   if (youtubeAccessToken) {
     const testRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=id&mine=true', {
       headers: { 'Authorization': `Bearer ${youtubeAccessToken}` }
@@ -86,27 +168,24 @@ async function ensureValidToken() {
 
     const errorData = await testRes.json();
     const errorMsg = errorData.error?.message || '';
-    // Quota errors don't mean the token is bad — pass it through
     if (errorMsg.toLowerCase().includes('quota')) {
       log('Pre-flight warning: Quota may be exceeded');
       return youtubeAccessToken;
     }
   }
 
-  // Token missing or expired — try silent refresh only.
-  // Do NOT fall back to interactive OAuth here: opening an auth window while the
-  // popup is open causes Chrome to close the popup (popups close on focus loss),
-  // which leaves the user confused about whether extraction is still running.
-  // If silent refresh fails the popup will show a clear "reconnect in Settings" error.
-  log('Access token expired or missing, attempting silent refresh...');
-  try {
-    const token = await launchAuthFlow(false);
-    log('Silent token refresh succeeded');
-    return token;
-  } catch {
-    log('Silent refresh failed — interactive re-authentication required');
-    throw new Error('YouTube authentication expired. Please reconnect in Settings.');
+  if (youtubeRefreshToken) {
+    log('Access token expired, attempting silent refresh via refresh token...');
+    try {
+      const token = await refreshAccessToken(youtubeRefreshToken);
+      log('Silent token refresh succeeded');
+      return token;
+    } catch {
+      log('Refresh token silent refresh failed');
+    }
   }
+
+  throw new Error('YouTube authentication expired. Please reconnect in Settings.');
 }
 
 // Create YouTube playlist

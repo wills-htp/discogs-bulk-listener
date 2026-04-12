@@ -15,9 +15,11 @@
         <span class="brand-sub">First-Time Setup Guide</span>
       </div>
       <div class="setup-progress">
-        <div class="progress-item" id="prog-cloud">1. Google Cloud</div>
-        <div class="progress-item" id="prog-discogs">2. Discogs Token</div>
-        <div class="progress-item" id="prog-connect">3. Connect YouTube</div>
+        <div class="progress-item" id="prog-cloud">Google Cloud</div>
+        <div class="progress-arrow">→</div>
+        <div class="progress-item" id="prog-discogs">Discogs Token</div>
+        <div class="progress-arrow">→</div>
+        <div class="progress-item" id="prog-connect">Connect YouTube</div>
       </div>
     </div>
 
@@ -25,7 +27,15 @@
 
       <div class="setup-intro">
         <p>This is a one-time setup — about 10 minutes. Once done you'll never need to do it again.</p>
-        <p>You need two things: a <strong>YouTube OAuth Client ID</strong> (lets the extension create playlists on your account) and a <strong>Discogs Personal Access Token</strong> (lets the extension access your cart and wantlist). Both are free.</p>
+        <p><strong>Why do you need to do this?</strong> The extension needs to coordinate between your Discogs account and your YouTube account — reading records from Discogs pages and creating playlists on your YouTube. To do that securely, it needs permission from both services, and those permissions are tied to your personal accounts.</p>
+        <p>Here's what you'll end up with by the end of this guide:</p>
+        <ul>
+          <li><strong>A redirect URI</strong> — generated automatically by the extension. You'll see it in <strong>Step E</strong> and paste it into Google Cloud Console. You don't create this; the extension creates it for you.</li>
+          <li><strong>A YouTube OAuth Client ID</strong> — a credential you create in Google Cloud Console in <strong>Step E</strong>, then paste into this guide. This is what lets the extension create playlists on your YouTube account.</li>
+          <li><strong>A Discogs Personal Access Token</strong> — a token you generate from your Discogs account settings in <strong>Step F</strong>, then paste into this guide. This is what lets the extension read your Discogs pages.</li>
+        </ul>
+        <p>Once you've entered those two credentials and connected your YouTube account in Step G, you're done.</p>
+        <p><strong>Tip:</strong> Keep this guide open as you go. Open Google Cloud Console, Discogs, and any other setup screens in separate tabs — then come back here to paste in your credentials at each step.</p>
         <div class="honest-note">
           <strong>Heads up:</strong> If this feels complicated and uncomfortable — sorry about that. This is a DIY project and a free extension, so unfortunately the setup has to be a bit clunky. There's nothing weird going on, it's just annoying. Follow the steps below and you'll be done in about 10 minutes.
         </div>
@@ -34,19 +44,18 @@
       <!-- ── PART 1: GOOGLE CLOUD ── -->
       <div class="setup-part">
         <div class="part-header">
-          <div class="part-badge">Part 1</div>
           <div class="part-title">Google Cloud Setup</div>
         </div>
 
         <!-- Step 1 -->
         <div class="setup-step">
-          <div class="step-num" id="stepnum-1">1</div>
+          <div class="step-num" id="stepnum-1">A</div>
           <div class="step-body">
             <h3>Create a Google Cloud project</h3>
             <p>Go to <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> and sign in with your Google account.</p>
             <p>Click the project name in the top bar, then click <strong>New Project</strong> in the top-right corner of the dialog that appears.</p>
             <img src="setup-screenshots/01-new-project.png" alt="Click New Project">
-            <p>Name it <strong>Discogs Bulk Listener</strong> (or anything you like) and click <strong>Create</strong>.</p>
+            <p>Name it <strong>Discogs Bulk Listener</strong> (or anything you like). Ignore Parent resource. Click <strong>Create</strong>.</p>
             <img src="setup-screenshots/02-name.png" alt="Name the project and click Create">
             <p>Once created you'll be taken to the project dashboard. Confirm the project name shows at the top.</p>
             <img src="setup-screenshots/03-welcome.png" alt="Project dashboard">
@@ -55,7 +64,7 @@
 
         <!-- Step 2 -->
         <div class="setup-step">
-          <div class="step-num" id="stepnum-2">2</div>
+          <div class="step-num" id="stepnum-2">B</div>
           <div class="step-body">
             <h3>Enable the YouTube Data API v3</h3>
             <p>Click <strong>APIs &amp; Services</strong> from the Quick access section on the dashboard. You'll see this sidebar:</p>
@@ -73,7 +82,7 @@
 
         <!-- Step 3 -->
         <div class="setup-step">
-          <div class="step-num" id="stepnum-3">3</div>
+          <div class="step-num" id="stepnum-3">C</div>
           <div class="step-body">
             <h3>Configure the OAuth consent screen</h3>
             <p>Click <strong>OAuth consent screen</strong> in the left sidebar. You'll see the Google Auth Platform overview.</p>
@@ -94,7 +103,7 @@
 
         <!-- Step 4 -->
         <div class="setup-step">
-          <div class="step-num" id="stepnum-4">4</div>
+          <div class="step-num" id="stepnum-4">D</div>
           <div class="step-body">
             <h3>Add yourself as a test user</h3>
             <p>Click <strong>Audience</strong> in the left sidebar. Scroll down to the <strong>Test users</strong> section and click <strong>+ Add users</strong>.</p>
@@ -108,7 +117,7 @@
 
         <!-- Step 5 -->
         <div class="setup-step">
-          <div class="step-num" id="stepnum-5">5</div>
+          <div class="step-num" id="stepnum-5">E</div>
           <div class="step-body">
             <h3>Create an OAuth Client ID</h3>
             <p>Click <strong>Clients</strong> in the left sidebar, then click <strong>+ Create client</strong>.</p>
@@ -126,7 +135,7 @@
             </div>
 
             <img src="setup-screenshots/20-create-client-form.png" alt="Add redirect URI and click Create">
-            <p>Click <strong>Create</strong>. A dialog shows your new client. <strong>Copy the Client ID</strong> — the long value ending in <code>.apps.googleusercontent.com</code>. You'll paste it below.</p>
+            <p>Click <strong>Create</strong>. A dialog shows your new client. <strong>Copy the Client ID</strong> (ending in <code>.apps.googleusercontent.com</code>) and the <strong>Client Secret</strong>. You'll paste both below.</p>
             <img src="setup-screenshots/21-oauth-client-created.png" alt="Copy the Client ID">
             <img src="setup-screenshots/22-clients-list.png" alt="Clients list">
             <img src="setup-screenshots/23-client-detail.png" alt="Client detail — Client ID shown on right">
@@ -136,6 +145,10 @@
               <label>Paste your YouTube Client ID here:</label>
               <div class="input-row">
                 <input type="text" id="client-id-input" class="cred-input" placeholder="Paste Client ID (.apps.googleusercontent.com)">
+              </div>
+              <label style="margin-top:12px;">Paste your YouTube Client Secret here:</label>
+              <div class="input-row">
+                <input type="text" id="client-secret-input" class="cred-input" placeholder="Paste Client Secret">
                 <button id="save-client-id-btn" class="btn-save" disabled>Save</button>
               </div>
               <div id="client-id-status" class="status-msg hidden"></div>
@@ -147,12 +160,11 @@
       <!-- ── PART 2: DISCOGS TOKEN ── -->
       <div class="setup-part">
         <div class="part-header">
-          <div class="part-badge">Part 2</div>
           <div class="part-title">Discogs Token</div>
         </div>
 
         <div class="setup-step">
-          <div class="step-num" id="stepnum-6">6</div>
+          <div class="step-num" id="stepnum-6">F</div>
           <div class="step-body">
             <h3>Get your Discogs personal access token</h3>
             <p>Go to <a href="https://www.discogs.com/settings/developers" target="_blank">discogs.com/settings/developers</a>. Click <strong>Generate token</strong>.</p>
@@ -176,15 +188,17 @@
       <!-- ── PART 3: CONNECT YOUTUBE ── -->
       <div class="setup-part">
         <div class="part-header">
-          <div class="part-badge">Part 3</div>
           <div class="part-title">Connect YouTube</div>
         </div>
 
         <div class="setup-step">
-          <div class="step-num" id="stepnum-7">7</div>
+          <div class="step-num" id="stepnum-7">G</div>
           <div class="step-body">
             <h3>Sign in with Google</h3>
             <p>Click the button below. A Google sign-in window will open — sign in with the same Google account you used in Google Cloud Console.</p>
+            <div class="warning-box">
+              <strong>Note:</strong> Google says new OAuth client settings can take <strong>5 minutes to a few hours</strong> to take effect. If you just created your client and get a redirect URI error, wait a few minutes and try again.
+            </div>
             <div class="warning-box">
               <strong>Expected warning:</strong> Google may show an "App isn't verified" screen. This is normal for personal credentials. Click <strong>Advanced</strong>, then <strong>Go to [app name] (unsafe)</strong> to continue.
             </div>

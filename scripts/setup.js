@@ -27,11 +27,11 @@ function markStepDone(stepId) {
 }
 
 async function checkCompletion() {
-  const { youtubeClientId, discogsToken, youtubeAccessToken } = await chrome.storage.local.get([
-    'youtubeClientId', 'discogsToken', 'youtubeAccessToken'
+  const { youtubeClientId, youtubeClientSecret, discogsToken, youtubeAccessToken } = await chrome.storage.local.get([
+    'youtubeClientId', 'youtubeClientSecret', 'discogsToken', 'youtubeAccessToken'
   ]);
-  updateProgress(!!youtubeClientId, !!discogsToken, !!youtubeAccessToken);
-  if (youtubeClientId && discogsToken && youtubeAccessToken) {
+  updateProgress(!!(youtubeClientId && youtubeClientSecret), !!discogsToken, !!youtubeAccessToken);
+  if (youtubeClientId && youtubeClientSecret && discogsToken && youtubeAccessToken) {
     const el = document.getElementById('setup-complete');
     if (el) {
       el.classList.remove('hidden');
@@ -42,7 +42,7 @@ async function checkCompletion() {
 
 async function init() {
   // Display redirect URI
-  const redirectUri = chrome.identity.getRedirectURL().replace(/\/$/, '');
+  const redirectUri = 'https://wills-htp.github.io/discogs-bulk-listener/callback.html';
   const redirectEl = document.getElementById('redirect-uri-display');
   if (redirectEl) redirectEl.textContent = redirectUri;
 
@@ -57,12 +57,12 @@ async function init() {
   }
 
   // Check existing credentials and pre-fill status
-  const { youtubeClientId, discogsToken, youtubeAccessToken } = await chrome.storage.local.get([
-    'youtubeClientId', 'discogsToken', 'youtubeAccessToken'
+  const { youtubeClientId, youtubeClientSecret, discogsToken, youtubeAccessToken } = await chrome.storage.local.get([
+    'youtubeClientId', 'youtubeClientSecret', 'discogsToken', 'youtubeAccessToken'
   ]);
 
-  if (youtubeClientId) {
-    document.getElementById('client-id-saved-banner').textContent = '✓ Client ID already saved';
+  if (youtubeClientId && youtubeClientSecret) {
+    document.getElementById('client-id-saved-banner').textContent = '✓ Client ID & Secret already saved';
     markStepDone('stepnum-5');
   }
 
@@ -78,31 +78,40 @@ async function init() {
     markStepDone('stepnum-7');
   }
 
-  updateProgress(!!youtubeClientId, !!discogsToken, !!youtubeAccessToken);
+  updateProgress(!!(youtubeClientId && youtubeClientSecret), !!discogsToken, !!youtubeAccessToken);
 
-  if (youtubeClientId && discogsToken && youtubeAccessToken) {
+  if (youtubeClientId && youtubeClientSecret && discogsToken && youtubeAccessToken) {
     document.getElementById('setup-complete')?.classList.remove('hidden');
   }
 
-  // ── Client ID ──
+  // ── Client ID + Secret ──
   const clientIdInput = document.getElementById('client-id-input');
+  const clientSecretInput = document.getElementById('client-secret-input');
   const saveClientIdBtn = document.getElementById('save-client-id-btn');
 
-  clientIdInput?.addEventListener('input', () => {
-    saveClientIdBtn.disabled = !clientIdInput.value.trim();
-  });
+  function updateSaveBtn() {
+    saveClientIdBtn.disabled = !(clientIdInput.value.trim() && clientSecretInput.value.trim());
+  }
+  clientIdInput?.addEventListener('input', updateSaveBtn);
+  clientSecretInput?.addEventListener('input', updateSaveBtn);
 
   saveClientIdBtn?.addEventListener('click', async () => {
     const clientId = clientIdInput.value.trim();
+    const clientSecret = clientSecretInput.value.trim();
     if (!isValidYouTubeClientId(clientId)) {
       showStatus('client-id-status', 'Invalid Client ID — it should end in .apps.googleusercontent.com', 'error');
       return;
     }
-    await chrome.storage.local.set({ youtubeClientId: clientId });
+    if (!clientSecret) {
+      showStatus('client-id-status', 'Client Secret is required', 'error');
+      return;
+    }
+    await chrome.storage.local.set({ youtubeClientId: clientId, youtubeClientSecret: clientSecret });
     clientIdInput.value = '';
+    clientSecretInput.value = '';
     saveClientIdBtn.disabled = true;
-    showStatus('client-id-status', '✓ Client ID saved — continue to Part 2 below', 'success');
-    document.getElementById('client-id-saved-banner').textContent = '✓ Client ID saved';
+    showStatus('client-id-status', '✓ Client ID & Secret saved — continue to Part 2 below', 'success');
+    document.getElementById('client-id-saved-banner').textContent = '✓ Client ID & Secret saved';
     markStepDone('stepnum-5');
     checkCompletion();
   });
