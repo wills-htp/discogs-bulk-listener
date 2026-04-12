@@ -57,6 +57,7 @@
         <ol class="setup-instructions">
           <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
           <li>Create a project &amp; enable <strong>YouTube Data API v3</strong></li>
+          <li>Go to <strong>OAuth consent screen</strong> → User Type: <em>External</em> → fill in app name &amp; your email → under Test Users add your Google account email → Save</li>
           <li>Credentials → Create → <strong>OAuth Client ID</strong> → Web Application</li>
           <li>Under <strong>Authorized redirect URIs</strong>, add:<br>
             <span class="redirect-uri-row">
@@ -86,6 +87,7 @@
       <div id="setup-step-3" class="setup-step hidden">
         <div class="setup-step-title">Connect YouTube Account</div>
         <p class="dim-text">Sign in with Google so the extension can create private playlists. A browser window will open.</p>
+        <p class="dim-text">If Google shows an <strong>"App isn't verified"</strong> warning, click <strong>Advanced</strong> → <strong>Go to [app name] (unsafe)</strong>. This is normal for personal-use credentials.</p>
         <button id="setup-connect-youtube-btn" class="btn btn-primary">CONNECT YOUTUBE →</button>
         <button id="setup-step3-back" class="btn btn-text">← BACK</button>
       </div>
