@@ -707,6 +707,20 @@ async function showSetup() {
   if (youtubeClientId && discogsToken) startStep = 3;
   else if (youtubeClientId) startStep = 2;
 
+  // Populate redirect URI display for step 1
+  const redirectUri = chrome.identity.getRedirectURL();
+  const redirectEl = document.getElementById('redirect-uri-display');
+  if (redirectEl) redirectEl.textContent = redirectUri;
+  const copyBtn = document.getElementById('copy-redirect-uri-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(redirectUri).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+      });
+    });
+  }
+
   Object.values(screens).forEach(s => s.classList.add('hidden'));
   screens.setup.classList.remove('hidden');
   goToSetupStep(startStep);

@@ -807,6 +807,37 @@ body {
   color: #3a3c3e;
 }
 
+.redirect-uri-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.redirect-uri-row code {
+  font-family: monospace;
+  font-size: 10px;
+  background: #d8dadc;
+  border-radius: 3px;
+  padding: 2px 5px;
+  color: #2a2c2e;
+  word-break: break-all;
+  flex: 1;
+  user-select: all;
+}
+
+.btn-copy-uri {
+  font-size: 10px;
+  padding: 2px 7px;
+  background: #b8bbbe;
+  border: 1px solid #9a9c9e;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #3a3c3e;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
 /* ─── ERROR ─── */
 .error-text {
   font-size: 12px;

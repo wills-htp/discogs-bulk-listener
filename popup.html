@@ -58,6 +58,12 @@
           <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
           <li>Create a project &amp; enable <strong>YouTube Data API v3</strong></li>
           <li>Credentials → Create → <strong>OAuth Client ID</strong> → Web Application</li>
+          <li>Under <strong>Authorized redirect URIs</strong>, add:<br>
+            <span class="redirect-uri-row">
+              <code id="redirect-uri-display">Loading...</code>
+              <button id="copy-redirect-uri-btn" type="button" class="btn-copy-uri">Copy</button>
+            </span>
+          </li>
           <li>Copy the Client ID and paste below</li>
         </ol>
         <input type="text" id="setup-client-id-input" class="token-input" placeholder="Paste Client ID (.apps.googleusercontent.com)">
