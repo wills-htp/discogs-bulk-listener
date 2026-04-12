@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Connecting…</title>
+</head>
+<body>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var code  = params.get('code');
+  var error = params.get('error');
+  var state = params.get('state');
+
+  if (error) {
+    document.write('Auth error: ' + error + '. Close this tab and try again.');
+    return;
+  }
+
+  // state must be a chromiumapp.org URL (set by the extension)
+  if (code && state && state.indexOf('.chromiumapp.org') !== -1) {
+    window.location.replace(state + '?code=' + encodeURIComponent(code));
+  } else {
+    document.write('Something went wrong. Close this tab and try again.');
+  }
+}());
+</script>
+</body>
+</html>
