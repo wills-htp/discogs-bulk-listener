@@ -136,6 +136,9 @@
 
             <img src="setup-screenshots/20-create-client-form.png" alt="Add redirect URI and click Create">
             <p>Click <strong>Create</strong>. A dialog shows your new client. <strong>Copy the Client ID</strong> (ending in <code>.apps.googleusercontent.com</code>) and the <strong>Client Secret</strong>. You'll paste both below.</p>
+            <div class="warning-box">
+              <strong>Important:</strong> The Client Secret is only shown once — right now, in this dialog. Google will hide it permanently after you close the dialog. Copy it before clicking OK or closing.
+            </div>
             <img src="setup-screenshots/21-oauth-client-created.png" alt="Copy the Client ID">
             <img src="setup-screenshots/22-clients-list.png" alt="Clients list">
             <img src="setup-screenshots/23-client-detail.png" alt="Client detail — Client ID shown on right">
@@ -200,9 +203,10 @@
               <strong>Note:</strong> Google says new OAuth client settings can take <strong>5 minutes to a few hours</strong> to take effect. If you just created your client and get a redirect URI error, wait a few minutes and try again.
             </div>
             <div class="warning-box">
-              <strong>Expected warning:</strong> Google may show an "App isn't verified" screen. This is normal for personal credentials. Click <strong>Advanced</strong>, then <strong>Go to [app name] (unsafe)</strong> to continue.
+              <strong>Expected warning:</strong> Google will show an "App isn't verified" screen. This is normal for personal credentials. Click <strong>Continue</strong> — do <strong>not</strong> click "Go back to safety". After that, approve the permissions on the next screen.
             </div>
             <button id="connect-youtube-btn" class="btn-connect">Connect YouTube →</button>
+            <p>After you approve, Google will redirect to a page that says "Connecting…" — a background process finishes the connection (takes about 5–10 seconds). That tab will close on its own. You'll see the confirmation here when it's done.</p>
             <div id="connect-status" class="status-msg hidden"></div>
           </div>
         </div>
