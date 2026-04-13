@@ -61,8 +61,18 @@ const elements = {
   backBtn: document.getElementById('back-btn'),
 
   // Quota display
-  quotaRemaining: document.getElementById('quota-remaining')
+  quotaRemaining: document.getElementById('quota-remaining'),
+  timeEstimate: document.getElementById('time-estimate')
 };
+
+function showTimeEstimate(count) {
+  if (!elements.timeEstimate || count <= 0) return;
+  const totalSec = count * 7;
+  const mins = Math.round(totalSec / 60);
+  const label = mins < 1 ? 'under 1 min' : `~${mins} min`;
+  elements.timeEstimate.textContent = `Keep this window open — extraction takes ${label} (${count} records × ~7 sec each)`;
+  elements.timeEstimate.classList.remove('hidden');
+}
 
 // Sync the pitch-track fill and cursor together
 function setProgress(pct) {
@@ -195,6 +205,8 @@ async function detectRecords() {
         }
         
         elements.startBtn.disabled = false;
+        const estimateCount = paginationData.totalPages > 1 ? paginationData.totalRecords : count;
+        showTimeEstimate(estimateCount);
       }
     } else {
       showError('Could not detect records: ' + response.error);

@@ -873,6 +873,17 @@ body {
   animation: fadeIn 0.2s ease;
 }
 
+/* ─── TIME ESTIMATE ─── */
+.time-estimate {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6a6c6e;
+  margin-top: 6px;
+  line-height: 1.5;
+  padding: 0 8px;
+}
+
 /* ─── QUOTA REMAINING ─── */
 .quota-remaining {
   text-align: center;
